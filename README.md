@@ -24,5 +24,8 @@ Group: **G067**  |  Problem: **MP077**  |  Faculty: Dhananjay Kumar  |  Batch 16
   * **Clean Checks:** Verified absence of target leakage, sentinel values, stuck sensors, and target typos.
 
 ### How to Run Stage 1
+Restore the DVC-tracked datasets first (a configured DVC remote is required):
 ```bash
+dvc pull
 PYTHONPATH=src python3 -m mp077.run_stage1
+```
