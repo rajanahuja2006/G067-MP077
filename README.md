@@ -33,7 +33,7 @@ PYTHONPATH=src python3 -m mp077.run_stage1
 ---
 
 ## Stage 2: Data Cleaning, Model Training & Experiment Tracking (Completed)
-* **Completed by:** Aadya Gupta (`aadya197`) & Kanchan Kumari (`kanchan3145`)
+* **Completed by:** Aadya Gupta (`aadya197`)
 * **Cleaning Pipeline (`src/mp077/run_stage2.py`):**
   * Handled duplicate rows (`25` extra records removed).
   * Standardized `19` raw `shop_type` spelling variants to `3` true levels (`chain`, `hospital_store`, `independent`).
