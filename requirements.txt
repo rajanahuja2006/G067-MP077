@@ -2,3 +2,6 @@ pandas==2.2.3
 PyYAML==6.0.2
 pytest==8.3.4
 dvc==3.67.1
+scikit-learn==1.9.1
+mlflow==3.18.0
+
