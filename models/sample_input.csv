@@ -1,0 +1,6 @@
+flu_cases_reported,temp_c,nearby_clinics,discount_pct,stock_lines,distance_to_hospital_km,shop_type,locality
+79,42.8,9,13.4,1637,9.2,hospital_store,Cantonment
+166,27.0,11,7.7,247,2.82,hospital_store,Old Town
+184,13.8,12,8.9,2146,2.94,chain,New Town
+74,16.8,10,12.8,378,4.82,chain,New Town
+138,43.9,7,20.1,2735,0.38,hospital_store,Cantonment

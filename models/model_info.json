@@ -1,0 +1,17 @@
+{
+  "registered_model": "mp077-model",
+  "alias": "champion",
+  "features": [
+    "flu_cases_reported",
+    "temp_c",
+    "nearby_clinics",
+    "discount_pct",
+    "stock_lines",
+    "distance_to_hospital_km",
+    "shop_type",
+    "locality"
+  ],
+  "sklearn": "1.9.1",
+  "pandas": "2.2.3",
+  "numpy": "2.5.5"
+}
