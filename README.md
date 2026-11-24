@@ -9,7 +9,7 @@ Group: **G067**  |  Problem: **MP077**  |  Faculty: Dhananjay Kumar  |  Batch 16
 | S24CSEU1218 | Rajan Ahuja | [rajanahuja2006](https://github.com/rajanahuja2006) | **Stage 1:** Repository setup, DVC tracking (`train.csv`, `later.csv`), data quality checks (`src/mp077/data_checks.py`), unit tests, and `reports/findings.yaml` | Completed (20 Nov 2026) |
 | S24CSEU1213 | Kanchan Kumari | [kanchan3145](https://github.com/kanchan3145) | Stage 1 Review & **Stage 2:** Data Cleaning / Preprocessing | Completed (21 Nov 2026) |
 | S24CSEU1220 | Aadya Gupta | [aadya197](https://github.com/aadya197) | Stage 1 Review & **Stage 2:** Model Training, MLflow Tracking (`mp077-stage2`, `@champion`) & Holdout Prediction | Completed (22 Nov 2026) |
-| S24CSEU1234 | Bhumik Kundu | [Bhumikkundu001](https://github.com/Bhumikkundu001) | Stage 1 Review & Stage 3 — API, Docker, CI and Kubernetes | In Progress |
+| S24CSEU1234 | Bhumik Kundu | [Bhumikkundu001](https://github.com/Bhumikkundu001) | Stage 1 Review & Stage 3 — API, Docker, CI and Kubernetes | Completed (24 Nov 2026) |
 | S24CSEU1223 | Animesh Kumar Yadav | [Animesh160604](https://github.com/Animesh160604) | Stage 1 Review & Stage 4 — Monitoring, retraining and final predictions | In Progress |
 
 ---
