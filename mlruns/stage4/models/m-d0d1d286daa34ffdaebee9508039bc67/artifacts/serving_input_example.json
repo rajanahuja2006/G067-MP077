@@ -1,0 +1,66 @@
+{
+  "dataframe_split": {
+    "columns": [
+      "flu_cases_reported",
+      "temp_c",
+      "nearby_clinics",
+      "discount_pct",
+      "stock_lines",
+      "distance_to_hospital_km",
+      "shop_type",
+      "locality"
+    ],
+    "data": [
+      [
+        77,
+        32.7,
+        3,
+        12.6,
+        2624,
+        0.38,
+        "independent",
+        "New Town"
+      ],
+      [
+        50,
+        10.7,
+        2,
+        16.4,
+        322,
+        2.16,
+        "chain",
+        "New Town"
+      ],
+      [
+        181,
+        5.5,
+        4,
+        10.0,
+        1963,
+        3.33,
+        "chain",
+        "Old Town"
+      ],
+      [
+        60,
+        40.0,
+        1,
+        22.0,
+        1765,
+        7.31,
+        "chain",
+        "Old Town"
+      ],
+      [
+        11,
+        29.9,
+        4,
+        16.0,
+        2548,
+        6.44,
+        "chain",
+        "Old Town"
+      ]
+    ]
+  }
+}

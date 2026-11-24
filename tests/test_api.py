@@ -1,5 +1,8 @@
 """API contract tests; they use inline data and do not require DVC CSV files."""
 
+from pathlib import Path
+
+import pandas as pd
 import json
 
 import pytest
@@ -34,20 +37,46 @@ def test_predict_accepts_exact_eight_features_and_returns_number():
 
 
 def test_prediction_matches_champion_export_reference():
-    sample_payload = {
-        "flu_cases_reported": 79,
-        "temp_c": 42.8,
-        "nearby_clinics": 9,
-        "discount_pct": 13.4,
-        "stock_lines": 1637,
-        "distance_to_hospital_km": 9.2,
-        "shop_type": "hospital_store",
-        "locality": "Cantonment",
-    }
-    response = client.post("/predict", json=sample_payload)
-    assert response.status_code == 200
-    assert response.json()["prediction"] == pytest.approx(453.3904127071465, rel=1e-6)
 
+    models_dir = (
+        Path(__file__).resolve().parents[1]
+        / "models"
+    )
+
+    sample_inputs = pd.read_csv(
+        models_dir / "sample_input.csv"
+    )
+
+    sample_expected = pd.read_csv(
+        models_dir / "sample_expected.csv"
+    )
+
+    assert sample_inputs.shape == (5, 8)
+    assert sample_expected.shape == (5, 1)
+
+    for index in range(len(sample_inputs)):
+
+        sample_payload = (
+            sample_inputs.iloc[index].to_dict()
+        )
+
+        expected = float(
+            sample_expected.iloc[index]["prediction"]
+        )
+
+        response = client.post(
+            "/predict",
+            json=sample_payload
+        )
+
+        assert response.status_code == 200
+
+        assert response.json()["prediction"] == (
+            pytest.approx(
+                expected,
+                rel=1e-6
+            )
+        )
 
 def test_nearby_clinics_above_25_is_rejected_before_prediction():
     payload = {**VALID_PAYLOAD, "nearby_clinics": 26}

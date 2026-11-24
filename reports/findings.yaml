@@ -1,62 +1,53 @@
-# MP077 findings --- fill in every value, keep every key.
-# The marking tool reads this file. Write null only where the comment says so.
-# Use the exact column names and group values from your data files.
-
-group_id: "G067"          # your group id, e.g. "G042"
-problem_id: "MP077"
-
+group_id: G067
+problem_id: MP077
 data_issues:
-  # For each of the 7 kinds: present: true or false.
-  # If present is false, leave the other values as null.
   leaking_column:
     present: false
-    column: null           # the column that must not be used as a feature
+    column: null
   unit_mixup:
     present: true
-    column: discount_pct   # the column recorded in a different unit
-    group_value: "Old Town"  # the value of locality whose rows are affected
-    factor: 0.01           # wrong value = right value x factor
+    column: discount_pct
+    group_value: Old Town
+    factor: 0.01
   sentinel_value:
     present: false
     column: null
-    value: null            # the special number typed instead of a blank
-    count: null            # how many rows have it
+    value: null
+    count: null
   duplicate_rows:
     present: true
-    count: 25            # number of EXTRA copies (rows you would delete)
+    count: 25
   stuck_sensor:
     present: false
     column: null
-    start_date: null       # first date with the stuck value, YYYY-MM-DD
-    end_date: null         # last date with the stuck value, YYYY-MM-DD
+    start_date: null
+    end_date: null
   target_typos:
     present: false
-    count: null            # rows whose target was typed 10 times too big
+    count: null
   spelling_variants:
     present: true
     column: shop_type
-    true_levels: 3      # how many real categories there are after cleaning
-
+    true_levels: 3
 tracking:
-  experiment_name: "mp077-stage2"
-  best_run_id: "22ac88d2bb0b43e18302e81f02348a03"
-  registered_model_name: "mp077-model"
-  champion_version: 1
-
+  experiment_name: mp077-stage2
+  best_run_id: 22ac88d2bb0b43e18302e81f02348a03
+  registered_model_name: mp077-model
+  champion_version: 2
 monitoring:
-  psi:                     # cleaned train.csv vs later.csv, 10 bins
-    flu_cases_reported: null
-    temp_c: null
-    nearby_clinics: null
-    discount_pct: null
-    stock_lines: null
-    distance_to_hospital_km: null
-  most_drifted_feature: null
-  mae_by_group:            # v1 on later.csv, per value of locality
-    'Old Town': null
-    'New Town': null
-    'Cantonment': null
-  worst_served_group: null
-  mae_v1_on_check: null    # v1 on the last 30% of later.csv (by date)
-  mae_v2_on_check: null    # v2 on the same rows
-  decision: null           # promote or keep
+  psi:
+    flu_cases_reported: 0.021518095343994306
+    temp_c: 0.009029718733763273
+    nearby_clinics: 3.8928394679892557
+    discount_pct: 0.061778629067958904
+    stock_lines: 0.02214009514580677
+    distance_to_hospital_km: 0.023932492455479647
+  most_drifted_feature: nearby_clinics
+  mae_by_group:
+    Old Town: 45.85938253199508
+    New Town: 238.4892645497043
+    Cantonment: 53.47693233831068
+  worst_served_group: New Town
+  mae_v1_on_check: 153.7802848523837
+  mae_v2_on_check: 90.4721098804522
+  decision: promote

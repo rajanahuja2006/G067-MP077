@@ -29,25 +29,151 @@ FEATURES = ["flu_cases_reported", "temp_c", "nearby_clinics", "discount_pct", "s
 
 
 def export():
+    import hashlib
     import mlflow
     import sklearn
+
     from mp077.run_stage2 import clean, features
 
+    db_path = Path("mlflow.db")
+
+    db_hash_before = hashlib.sha256(
+        db_path.read_bytes()
+    ).hexdigest()
+
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
-    pipe = mlflow.sklearn.load_model("models:/mp077-model@champion")
+    mlflow.set_registry_uri("sqlite:///mlflow.db")
+
+    client = mlflow.MlflowClient()
+
+    champion = client.get_model_version_by_alias(
+        "mp077-model",
+        "champion"
+    )
+
+    print("===== CHAMPION EXPORT =====")
+
+    print("Registered model:", champion.name)
+    print("Champion version:", champion.version)
+    print("Champion run ID:", champion.run_id)
+
+    pipe = mlflow.sklearn.load_model(
+        "models:/mp077-model@champion"
+    )
+
     got = list(pipe.feature_names_in_)
-    assert sorted(got) == sorted(FEATURES), f"unexpected features: {got}"
+
+    assert got == FEATURES, (
+        f"Unexpected feature order: {got}"
+    )
+
+    h = features(
+        clean(
+            pd.read_csv(
+                "data/raw/holdout_features.csv"
+            )
+        )
+    ).head(5)[FEATURES]
+
+    assert h.shape == (5, 8)
+
+    expected = np.asarray(
+        pipe.predict(h),
+        dtype=float
+    )
+
+    assert expected.shape == (5,)
+    assert np.isfinite(expected).all()
+
     Path("models").mkdir(exist_ok=True)
-    joblib.dump(pipe, MODEL)
 
-    h = features(clean(pd.read_csv("data/raw/holdout_features.csv"))).head(5)[FEATURES]
-    h.to_csv(SAMPLE_IN, index=False)
-    pd.DataFrame({"prediction": pipe.predict(h)}).to_csv(SAMPLE_OUT, index=False)
-    INFO.write_text(json.dumps({"registered_model": "mp077-model", "alias": "champion",
-                                "features": FEATURES, "sklearn": sklearn.__version__,
-                                "pandas": pd.__version__, "numpy": np.__version__}, indent=2))
-    print(f"Saved {MODEL} with {len(got)} input features. Now commit models/ and push.")
+    temporary_model = MODEL.with_suffix(".tmp")
 
+    joblib.dump(pipe, temporary_model)
+
+    restored = joblib.load(temporary_model)
+
+    assert list(
+        restored.feature_names_in_
+    ) == FEATURES
+
+    actual = restored.predict(h)
+
+    assert np.allclose(
+        expected,
+        actual,
+        rtol=1e-12,
+        atol=1e-10
+    )
+
+    current_champion = (
+        client.get_model_version_by_alias(
+            "mp077-model",
+            "champion"
+        )
+    )
+
+    assert current_champion.version == champion.version
+    assert current_champion.run_id == champion.run_id
+
+    assert hashlib.sha256(
+        db_path.read_bytes()
+    ).hexdigest() == db_hash_before
+
+    temporary_model.replace(MODEL)
+
+    h.to_csv(
+        SAMPLE_IN,
+        index=False
+    )
+
+    pd.DataFrame({
+        "prediction": expected
+    }).to_csv(
+        SAMPLE_OUT,
+        index=False
+    )
+
+    model_hash = hashlib.sha256(
+        MODEL.read_bytes()
+    ).hexdigest()
+
+    metadata = {
+        "registered_model": "mp077-model",
+        "alias": "champion",
+        "champion_version": int(champion.version),
+        "run_id": champion.run_id,
+        "features": FEATURES,
+        "sklearn": sklearn.__version__,
+        "pandas": pd.__version__,
+        "numpy": np.__version__,
+        "model_sha256": model_hash,
+    }
+
+    INFO.write_text(
+        json.dumps(metadata, indent=2),
+        encoding="utf-8"
+    )
+
+    print("\n===== EXPORT VERIFICATION =====")
+
+    print("Exported model:", MODEL)
+    print("Champion version:", champion.version)
+    print("Input features:", len(got))
+    print("Model SHA256:", model_hash)
+
+    print(
+        "Maximum prediction difference:",
+        np.max(np.abs(expected - actual))
+    )
+
+    print("Sample predictions:", expected.tolist())
+
+    print("MLflow database unchanged: True")
+    print("Champion alias unchanged: True")
+    print("No retraining performed")
+    print("No new model registration performed")
+    print("Champion export: SUCCESS")
 
 def check():
     import sklearn

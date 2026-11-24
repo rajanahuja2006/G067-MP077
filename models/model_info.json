@@ -1,6 +1,8 @@
 {
   "registered_model": "mp077-model",
   "alias": "champion",
+  "champion_version": 2,
+  "run_id": "df8bc1f1d3b3421b9dbbbc7311460f45",
   "features": [
     "flu_cases_reported",
     "temp_c",
@@ -13,5 +15,6 @@
   ],
   "sklearn": "1.9.1",
   "pandas": "2.2.3",
-  "numpy": "2.5.5"
+  "numpy": "2.5.5",
+  "model_sha256": "797b4e244ced21fc59b617f9714b814518cad6e93d00357fc12d46723ce98973"
 }
