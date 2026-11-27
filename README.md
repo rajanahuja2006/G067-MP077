@@ -10,7 +10,7 @@ Group: **G067**  |  Problem: **MP077**  |  Faculty: Dhananjay Kumar  |  Batch 16
 | S24CSEU1213 | Kanchan Kumari | [kanchan3145](https://github.com/kanchan3145) | Stage 1 Review & **Stage 2:** Data Cleaning / Preprocessing | Completed (21 Nov 2026) |
 | S24CSEU1220 | Aadya Gupta | [aadya197](https://github.com/aadya197) | Stage 1 Review & **Stage 2:** Model Training, MLflow Tracking (`mp077-stage2`, `@champion`) & Holdout Prediction | Completed (22 Nov 2026) |
 | S24CSEU1234 | Bhumik Kundu | [Bhumikkundu001](https://github.com/Bhumikkundu001) | Stage 1 Review & Stage 3 — API, Docker, CI and Kubernetes | Completed (24 Nov 2026) |
-| S24CSEU1223 | Animesh Kumar Yadav | [Animesh160604](https://github.com/Animesh160604) | Stage 1 Review & Stage 4 — Monitoring, retraining and final predictions | In Progress |
+| S24CSEU1223 | Animesh Kumar Yadav | [Animesh160604](https://github.com/Animesh160604) | Stage 1 Review & Docker runtime verification, Kubernetes deployment and self-healing verification, automated API smoke testing, and CI/CD automation | Completed (27 Nov 2026) |
 
 ---
 
@@ -195,3 +195,46 @@ kubectl get pods
 **Note:** The final MLflow database already contains V1 and V2, with V2 assigned the `champion` alias. Do not rerun training or registration scripts against the completed database.
 
 **Limitations:** PSI uses 10 equal-width bins with an epsilon of 0.0001. Holdout target values are unavailable for local accuracy evaluation. Kubernetes testing verifies sequential functional requests rather than concurrent stress performance.
+
+## Docker, Kubernetes and CI/CD Verification
+
+### Docker Runtime Verification
+
+- Successfully built and tested the Dockerized FastAPI application.
+- Verified health and prediction endpoints.
+- Validated rejection of invalid input values.
+- Verified structured JSON prediction logging.
+
+### Kubernetes Deployment Verification
+
+- Deployed the champion V2 model using Docker Desktop Kubernetes.
+- Verified four running and available application replicas.
+- Verified readiness and liveness probes.
+- Tested API connectivity through the Kubernetes ClusterIP service using port forwarding.
+- Demonstrated automatic pod replacement and self-healing.
+
+### Automated CI/CD Pipeline
+
+The GitHub Actions workflow automatically performs:
+
+1. Automated pytest testing.
+2. Docker image building.
+3. Docker container execution.
+4. Automated API smoke testing.
+5. Temporary Kind Kubernetes cluster creation.
+6. Kubernetes application deployment.
+7. Verification of four ready replicas.
+8. Kubernetes API smoke testing.
+9. Temporary resource cleanup.
+
+Both the continuous integration and deployment verification jobs passed successfully.
+
+### Verification Reports
+
+- [Docker Runtime Verification](reports/docker-runtime-verification.md)
+- [Kubernetes Runtime Verification](reports/kubernetes-runtime-verification.md)
+- [Successful GitHub Actions Execution](https://github.com/rajanahuja2006/G067-MP077/actions/runs/46028886537)
+
+### Contributor
+
+Animesh Kumar Yadav — Docker runtime testing, Kubernetes deployment verification, automated API smoke testing and CI/CD automation.
