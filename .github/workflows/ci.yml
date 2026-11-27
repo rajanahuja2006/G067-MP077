@@ -1,12 +1,17 @@
-name: MP077 CI
+name: MP077 CI/CD
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,3 +30,83 @@ jobs:
         env:
           PYTHONPATH: src
         run: python -m pytest -q
+
+  deploy-test:
+    name: Docker and Kubernetes verification
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build --provenance=false -t mp077-api:2.0 .
+
+      - name: Verify Docker image
+        run: docker images mp077-api
+
+      - name: Run Docker container
+        run: |
+          docker run -d \
+            --name mp077-container \
+            -p 127.0.0.1:8000:8000 \
+            mp077-api:2.0
+
+      - name: Test Docker API
+        run: python3 .github/scripts/api_smoke_test.py http://127.0.0.1:8000
+
+      - name: Show Docker application logs
+        if: always()
+        run: docker logs mp077-container || true
+
+      - name: Stop Docker container
+        if: always()
+        run: docker rm -f mp077-container || true
+
+      - name: Create Kubernetes cluster
+        uses: helm/kind-action@v1.12.0
+        with:
+          cluster_name: mp077
+
+      - name: Verify Kubernetes node
+        run: kubectl get nodes
+
+      - name: Load Docker image into Kubernetes
+        run: kind load docker-image mp077-api:2.0 --name mp077
+
+      - name: Deploy application
+        run: kubectl apply -f k8s/
+
+      - name: Verify deployment rollout
+        run: |
+          kubectl rollout status deployment/mp077-api --timeout=300s
+
+          kubectl get deployments
+          kubectl get pods -o wide
+          kubectl get services
+
+          READY=$(kubectl get deployment mp077-api -o jsonpath='{.status.readyReplicas}')
+          test "$READY" = "4"
+
+      - name: Test Kubernetes API
+        run: |
+          kubectl port-forward service/mp077-svc 8080:80 > port-forward.log 2>&1 &
+          PF_PID=$!
+          trap 'kill "$PF_PID" 2>/dev/null || true' EXIT
+
+          python3 .github/scripts/api_smoke_test.py http://127.0.0.1:8080
+
+      - name: Show Kubernetes diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get pods -o wide || true
+          kubectl describe deployment mp077-api || true
+          kubectl logs -l app=mp077-api --prefix=true --tail=50 || true
+          kubectl get events --sort-by=.lastTimestamp || true
+          cat port-forward.log 2>/dev/null || true
+
+      - name: Clean up Kubernetes cluster
+        if: always()
+        run: kind delete cluster --name mp077 || true
