@@ -31,8 +31,8 @@ for attempt in range(30):
         status, body = request("/health")
         if status == 200 and body.get("status") == "ok":
             break
-    except (URLError, TimeoutError):
-        pass
+    except (URLError, TimeoutError, ConnectionError) as error:
+        print(f"Waiting for API startup: {error}", flush=True)
 
     time.sleep(2)
 else:
