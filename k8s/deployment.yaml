@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mp077-api
-          image: mp077-api:2.0
+          image: mp077-api:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

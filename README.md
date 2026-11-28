@@ -79,7 +79,7 @@ PYTHONPATH=src python3 -m mp077.run_stage2 predict --holdout data/raw/holdout_fe
   * Added `.dockerignore` to exclude unnecessary files from the Docker build context.
 * **Kubernetes Configuration:**
   * Created `k8s/deployment.yaml` for Deployment `mp077-api` with 4 replicas.
-  * Initially configured container image `mp077-api:1.0` for V1. Stage 4 updates the deployment to `mp077-api:2.0` for Champion V2. Port `8000` and `/health` probes remain unchanged.
+  *  Stage 4 promoted MLflow Champion V2. The final deployment uses the Docker image tag `mp077-api:1.0` to comply with the official MP077 problem specification while retaining Champion V2. Port `8000` and `/health` probes remain unchanged.
   * Created `k8s/service.yaml` for Service `mp077-svc`, exposing port `80` and forwarding to port `8000`.
   * Live cluster deployment was not required by the Stage 3 handbook.
 * **Continuous Integration (GitHub Actions):**
@@ -181,7 +181,7 @@ PYTHONPATH=src python3 -m mp077.export_model check
 python -m pytest -q
 
 # Build the Champion V2 Docker image
-docker build -t mp077-api:2.0 .
+docker build -t mp077-api:1.0 .
 
 # Deploy Champion V2 to Kubernetes
 kubectl apply -f k8s/deployment.yaml
