@@ -1,9 +1,12 @@
 # Kubernetes Runtime Verification — MP077
 
-**Date:** 27 November 2026  
-**Contributor:** Animesh Yadav  
-**GitHub Username:** Animesh160604  
-**Branch:** docker-kubernetes-cd
+**Date:** 27–28 November 2026
+
+**Contributor:** Animesh Kumar Yadav
+
+**GitHub Username:** Animesh160604
+
+**Branches:** docker-kubernetes-cd, fix-docker-image-tag
 
 ## Objective
 
@@ -156,3 +159,38 @@ The MP077 FastAPI machine learning application was successfully deployed and ver
 All four application replicas were running and available. Health monitoring, prediction functionality, input validation, service connectivity and automatic pod replacement were successfully verified.
 
 The automated API smoke testing script passed all four tests against the Kubernetes deployment, demonstrating successful runtime integration of the Dockerized machine learning application with Kubernetes.
+
+
+## Final Docker Image Tag Compliance Verification — 28 November 2026
+
+The Docker image tag was changed from `mp077-api:2.0` to `mp077-api:1.0` to comply with the official MP077 problem specification.
+
+### Configuration Changes
+
+- Updated `k8s/deployment.yaml` to use `mp077-api:1.0`.
+- Updated Docker build, container execution and Kind image loading commands in `.github/workflows/ci.yml`.
+- Updated the README deployment instructions.
+- Retained MLflow Champion V2 without modifying the trained model or holdout predictions.
+
+### Runtime Verification Results
+
+| Verification | Result |
+|---|---|
+| Docker image build | PASS |
+| Required image tag | mp077-api:1.0 |
+| Champion model version | V2 |
+| Docker API smoke tests | 4/4 passed |
+| Kubernetes deployment rollout | Successful |
+| Kubernetes replicas | 4/4 ready |
+| Pod restarts at verification | 0 |
+| Kubernetes API smoke tests | 4/4 passed |
+| Valid prediction from both environments | 233.02902850216827 |
+| Invalid clinic count rejection | PASS |
+| Invalid discount rejection | PASS |
+
+The corrected Docker image and Kubernetes deployment were successfully verified. The image tag correction did not change the tested model prediction or API validation behavior.
+
+The previous verification results using image tag `2.0` are retained as historical testing evidence.
+
+
+

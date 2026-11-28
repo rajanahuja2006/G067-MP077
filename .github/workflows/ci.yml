@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build --provenance=false -t mp077-api:2.0 .
+        run: docker build --provenance=false -t mp077-api:1.0 .
 
       - name: Verify Docker image
         run: docker images mp077-api
@@ -52,7 +52,7 @@ jobs:
           docker run -d \
             --name mp077-container \
             -p 127.0.0.1:8000:8000 \
-            mp077-api:2.0
+            mp077-api:1.0
 
       - name: Test Docker API
         run: python3 .github/scripts/api_smoke_test.py http://127.0.0.1:8000
@@ -74,7 +74,7 @@ jobs:
         run: kubectl get nodes
 
       - name: Load Docker image into Kubernetes
-        run: kind load docker-image mp077-api:2.0 --name mp077
+        run: kind load docker-image mp077-api:1.0 --name mp077
 
       - name: Deploy application
         run: kubectl apply -f k8s/
